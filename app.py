@@ -5,13 +5,37 @@ import ast
 import os
 import urllib.request
 
-url = "https://drive.google.com/uc?export=download&id=1hRT38pzmOWU-McJPbFXwdw37QxyDKrYu"
-output_path = "cosine_similarity.pkl"
 
-if not os.path.exists(output_path):
-    st.write("Downloading cosine_similarity.pkl from Google Drive...")
-    urllib.request.urlretrieve(url, output_path)
-    st.write("Download complete.")
+
+def download_file_from_google_drive(id, destination):
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = requests.Session()
+
+    response = session.get(URL, params={'id': id}, stream=True)
+    token = None
+
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            token = value
+            break
+
+    if token:
+        params = {'id': id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(32768):
+            if chunk:
+                f.write(chunk)
+
+file_id = "1hRT38pzmOWU-McJPbFXwdw37QxyDKrYu"
+destination = "cosine_similarity.pkl"
+
+if not os.path.exists(destination):
+    print("Downloading cosine_similarity.pkl from Google Drive...")
+    download_file_from_google_drive(file_id, destination)
+    print("Download complete.")
 
 
 
@@ -264,3 +288,4 @@ if st.button('🎯 Get Recommendations'):
                 cast_display = ", ".join(recommended_movies_cast[i][:2])  # Show first 2 cast members
 
                 st.write(cast_display)
+
