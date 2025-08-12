@@ -2,6 +2,19 @@ import streamlit as st
 import pickle
 import requests
 import ast
+import os
+import urllib.request
+
+url = "https://drive.google.com/uc?export=download&id=1hRT38pzmOWU-McJPbFXwdw37QxyDKrYu"
+output_path = "cosine_similarity.pkl"
+
+if not os.path.exists(output_path):
+    st.write("Downloading cosine_similarity.pkl from Google Drive...")
+    urllib.request.urlretrieve(url, output_path)
+    st.write("Download complete.")
+
+
+
 
 def fetch_poster(movie_id):
     url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(movie_id)
@@ -249,4 +262,5 @@ if st.button('🎯 Get Recommendations'):
             if recommended_movies_cast[i]:
                 st.caption("Cast:")
                 cast_display = ", ".join(recommended_movies_cast[i][:2])  # Show first 2 cast members
+
                 st.write(cast_display)
