@@ -3,19 +3,18 @@ import pickle
 import requests
 import ast
 import os
-import urllib.request
-import gdown
 
-file_id = "1hRT38pzmOWU-McJPbFXwdw37QxyDKrYu"
+url = "https://huggingface.co/MShoaib123/movies-recommender-files/resolve/main/cosine_similarity.pkl"
 output = "cosine_similarity.pkl"
-url = f"https://drive.google.com/uc?id={file_id}"
 
 if not os.path.exists(output):
-    print("Downloading cosine_similarity.pkl with gdown...")
-    gdown.download(url, output, quiet=False)
-    print("Download complete.")
-else:
-    print(f"{output} already exists. Using existing file.")
+    st.write("Downloading cosine_similarity.pkl from Hugging Face...")
+    response = requests.get(url, stream=True)
+    with open(output, "wb") as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+    st.write("Download complete.")
 
 with open(output, "rb") as f:
     cosine_sim = pickle.load(f)
@@ -274,6 +273,7 @@ if st.button('🎯 Get Recommendations'):
                 cast_display = ", ".join(recommended_movies_cast[i][:2])  # Show first 2 cast members
 
                 st.write(cast_display)
+
 
 
 
