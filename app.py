@@ -7,6 +7,9 @@ import urllib.request
 
 
 
+import requests
+import os
+
 def download_file_from_google_drive(id, destination):
     URL = "https://docs.google.com/uc?export=download"
 
@@ -36,6 +39,7 @@ if not os.path.exists(destination):
     print("Downloading cosine_similarity.pkl from Google Drive...")
     download_file_from_google_drive(file_id, destination)
     print("Download complete.")
+
 
 
 
@@ -288,4 +292,5 @@ if st.button('🎯 Get Recommendations'):
                 cast_display = ", ".join(recommended_movies_cast[i][:2])  # Show first 2 cast members
 
                 st.write(cast_display)
+
 
