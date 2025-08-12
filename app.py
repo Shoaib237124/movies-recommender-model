@@ -13,6 +13,13 @@ url = f"https://drive.google.com/uc?id={file_id}"
 if not os.path.exists(output):
     print("Downloading cosine_similarity.pkl with gdown...")
     gdown.download(url, output, quiet=False)
+    print("Download complete.")
+else:
+    print(f"{output} already exists. Using existing file.")
+
+with open(output, "rb") as f:
+    cosine_sim = pickle.load(f)
+
 
 
 
@@ -181,7 +188,7 @@ def recommend_movies(selected_movie):
 # Load both datasets
 movies_list = pickle.load(open('movies_recommendation.pkl', 'rb'))  # For recommendations
 combined_movies = pickle.load(open('Combined_Movies.pkl', 'rb'))    # For detailed info
-cosine_sim = pickle.load(open('cosine_similarity.pkl', 'rb'))      # For similarity matrix
+    # For similarity matrix
 
 # Streamlit UI
 st.set_page_config(page_title="Movie Recommender System", layout="wide")
@@ -267,6 +274,7 @@ if st.button('🎯 Get Recommendations'):
                 cast_display = ", ".join(recommended_movies_cast[i][:2])  # Show first 2 cast members
 
                 st.write(cast_display)
+
 
 
 
