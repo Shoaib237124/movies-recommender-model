@@ -3,21 +3,27 @@ import pickle
 import requests
 import ast
 import os
+from huggingface_hub import hf_hub_download
 
-url = "https://huggingface.co/MShoaib123/movies-recommender-files/resolve/main/cosine_similarity.pkl"
-output = "cosine_similarity.pkl"
+# Get token from Streamlit secrets
+HUGGINGFACE_TOKEN = st.secrets["HUGGINGFACE_TOKEN"]
 
-if not os.path.exists(output):
-    st.write("Downloading cosine_similarity.pkl from Hugging Face...")
-    response = requests.get(url, stream=True)
-    with open(output, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            if chunk:
-                f.write(chunk)
+output_file = "cosine_similarity.pkl"
+
+if not os.path.exists(output_file):
+    st.write("Downloading cosine_similarity.pkl from Hugging Face with authentication...")
+    hf_hub_download(
+        repo_id="MShoaib123/movies-recommender-files",
+        filename="cosine_similarity.pkl",
+        local_dir=".",
+        token=HUGGINGFACE_TOKEN,
+        local_dir_use_symlinks=False
+    )
     st.write("Download complete.")
 
-with open(output, "rb") as f:
+with open(output_file, "rb") as f:
     cosine_sim = pickle.load(f)
+
 
 
 
@@ -273,6 +279,7 @@ if st.button('🎯 Get Recommendations'):
                 cast_display = ", ".join(recommended_movies_cast[i][:2])  # Show first 2 cast members
 
                 st.write(cast_display)
+
 
 
 
